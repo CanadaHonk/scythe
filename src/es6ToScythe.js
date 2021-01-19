@@ -58,19 +58,13 @@ export const replaceImports = async (code, pathToCodeFile) => {
     let codeToAdd = '';
 
     if (importAllMatch) {
-      // const modAsObj = {};
       codeToAdd += `const ${importAllMatch[1]} = {`;
 
       for (const key of Object.keys(mod)) {
         codeToAdd += `'${key}': ${mod[key].toString()},`;
-        // modAsObj[key] = mod[key];
       }
 
       codeToAdd += '};';
-
-      // console.log(modAsObj);
-
-      // codeToAdd += `const ${importAllMatch[1]} = {}`
     }
 
     for (const i of imports) {

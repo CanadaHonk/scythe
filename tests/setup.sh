@@ -3,5 +3,5 @@
 cd $(dirname $BASH_SOURCE)
 cd ..
 
-rm -rf examples/scythe/*
-cp -r src examples/scythe/
+rm -rf tests/scythe/*
+cp -r src/* tests/scythe/

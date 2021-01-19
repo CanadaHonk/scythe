@@ -1,3 +1,4 @@
+import { SSL_OP_MICROSOFT_SESS_ID_BUG } from 'constants';
 import { join, sep } from 'path';
 
 const importReplacing = /import (.*) from (.*)/g;
@@ -16,6 +17,10 @@ export const replaceImports = async (code, pathToCodeFile) => {
   const chdir = pathToCodeFile.split(sep).slice(0, -1).join(sep);
 
   return await replaceAsync(code, importReplacing, async (_full, uImports, uLocalPath) => {
+    if (!uLocalPath.includes('/')) {
+      return _full;
+    }
+
     const localPath = uLocalPath.match(/['"](.*)['"]/)[1];
     const fullPath = join(chdir, localPath);
 
@@ -23,10 +28,33 @@ export const replaceImports = async (code, pathToCodeFile) => {
 
     const importAllMatch = uImports.match(/\* as (.*)/);
 
-    const imports = !uImports.includes('{') ?
+    let imports = !uImports.includes('{') ?
       importAllMatch ? [] :
       ['default'] :
-      uImports.match(/[A-Za-z0-9]*(,)?/g).filter((val, ind, arr) => val.length !== 0 && arr.indexOf(val) == ind);
+      uImports.match(/[^{} ]*(,)?/g).filter((val, ind, arr) => val.length !== 0 && arr.indexOf(val) == ind);
+
+    const importsToSplice = [];
+
+    imports = imports.map((val, ind) => {
+      if (ind > 1 && imports[ind - 1] == 'as') {
+        const moduleName = imports[ind - 2];
+        const importedName = val;
+
+        console.log({moduleName, importedName});
+
+        importsToSplice.push(ind - 2);
+
+        return [moduleName, importedName];
+      }
+
+      return val;
+    });
+
+    for (const toSplice of importsToSplice) {
+      imports.splice(toSplice - 3, 2);
+    }
+
+    console.log(imports);
 
     let codeToAdd = '';
 
@@ -47,13 +75,15 @@ export const replaceImports = async (code, pathToCodeFile) => {
     }
 
     for (const i of imports) {
-      const moduleFn = mod[i];
-      console.log(i, moduleFn.toString());
+      const isAsImport = Array.isArray(i);
 
-      codeToAdd += `const ${i === 'default' ? uImports : i} = ${moduleFn.toString()};`;
+      const moduleFn = mod[isAsImport ? i[0] : i];
+      // console.log(i, moduleFn.toString());
+
+      codeToAdd += `const ${isAsImport ? i[1] : i === 'default' ? uImports : i} = ${moduleFn.toString()};`;
     }
 
-    console.log(_full, `->`, codeToAdd);
+    // console.log(_full, `->`, codeToAdd);
 
     return codeToAdd;
   });

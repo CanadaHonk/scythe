@@ -21,7 +21,7 @@ export const replaceImports = async (code, pathToCodeFile) => {
 
     const mod = await import(join(process.cwd(), fullPath));
 
-    const imports = uImports.match(/[A-Za-z0-9]*(,)?/g).filter((val, ind, arr) => val.length !== 0 && arr.indexOf(val) == ind);
+    const imports = !uImports.includes('{') ? ['default'] : uImports.match(/[A-Za-z0-9]*(,)?/g).filter((val, ind, arr) => val.length !== 0 && arr.indexOf(val) == ind);
 
     let codeToAdd = '';
 
@@ -29,7 +29,7 @@ export const replaceImports = async (code, pathToCodeFile) => {
       const moduleFn = mod[i];
       console.log(i, moduleFn.toString());
 
-      codeToAdd += `const ${i} = ${moduleFn.toString()};`;
+      codeToAdd += `const ${i === 'default' ? uImports : i} = ${moduleFn.toString()};`;
     }
 
     console.log(_full, `${' '.repeat(5)}->${' '.repeat(5)}`, codeToAdd);

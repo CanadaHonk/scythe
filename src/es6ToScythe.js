@@ -1,4 +1,3 @@
-import { SSL_OP_MICROSOFT_SESS_ID_BUG } from 'constants';
 import { join, sep } from 'path';
 
 const importReplacing = /import (.*) from (.*)/g;

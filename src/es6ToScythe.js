@@ -32,7 +32,7 @@ export const replaceImports = async (code, pathToCodeFile) => {
       codeToAdd += `const ${i === 'default' ? uImports : i} = ${moduleFn.toString()};`;
     }
 
-    console.log(_full, `${' '.repeat(5)}->${' '.repeat(5)}`, codeToAdd);
+    console.log(_full, `->`, codeToAdd);
 
     return codeToAdd;
   });

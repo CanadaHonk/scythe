@@ -21,9 +21,30 @@ export const replaceImports = async (code, pathToCodeFile) => {
 
     const mod = await import(join(process.cwd(), fullPath));
 
-    const imports = !uImports.includes('{') ? ['default'] : uImports.match(/[A-Za-z0-9]*(,)?/g).filter((val, ind, arr) => val.length !== 0 && arr.indexOf(val) == ind);
+    const importAllMatch = uImports.match(/\* as (.*)/);
+
+    const imports = !uImports.includes('{') ?
+      importAllMatch ? [] :
+      ['default'] :
+      uImports.match(/[A-Za-z0-9]*(,)?/g).filter((val, ind, arr) => val.length !== 0 && arr.indexOf(val) == ind);
 
     let codeToAdd = '';
+
+    if (importAllMatch) {
+      // const modAsObj = {};
+      codeToAdd += `const ${importAllMatch[1]} = {`;
+
+      for (const key of Object.keys(mod)) {
+        codeToAdd += `'${key}': ${mod[key].toString()},`;
+        // modAsObj[key] = mod[key];
+      }
+
+      codeToAdd += '};';
+
+      // console.log(modAsObj);
+
+      // codeToAdd += `const ${importAllMatch[1]} = {}`
+    }
 
     for (const i of imports) {
       const moduleFn = mod[i];

@@ -12,7 +12,7 @@ async function replaceAsync(str, regex, asyncFn) { // https://stackoverflow.com/
   return str.replace(regex, () => data.shift());
 }
 
-export const replaceImports = async (code, pathToCodeFile) => {
+export const replaceES6Imports = async (code, pathToCodeFile) => {
   const chdir = pathToCodeFile.split(sep).slice(0, -1).join(sep);
 
   return await replaceAsync(code, importReplacing, async (_full, uImports, uLocalPath) => {

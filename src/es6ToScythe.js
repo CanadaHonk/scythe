@@ -71,12 +71,12 @@ export const replaceImports = async (code, pathToCodeFile) => {
       const isAsImport = Array.isArray(i);
 
       const moduleFn = mod[isAsImport ? i[0] : i];
-      // console.log(i, moduleFn.toString());
+      console.log(i, moduleFn.toString());
 
       codeToAdd += `const ${isAsImport ? i[1] : i === 'default' ? uImports : i} = ${moduleFn.toString()};`;
     }
 
-    // console.log(_full, `->`, codeToAdd);
+    console.log(_full, `->`, codeToAdd);
 
     return codeToAdd;
   });

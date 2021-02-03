@@ -1,7 +1,7 @@
 {
   "name": "scythe",
   "version": "0.1.0",
-  "description": "Experimental runtime-free ES6 imports bundler.",
+  "description": "Experimental runtime-free ES6 imports, and SCSS bundler.",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,10 +1,11 @@
 import { readFileSync } from 'fs';
 import { replaceES6Imports } from './embedES6.js';
 
-const mainJSFile = process.argv[2];
+const processor = process.argv[2];
+const mainFile = process.argv[3];
 
-const code = readFileSync(mainJSFile, 'utf8');
-const out = await replaceES6Imports(code, mainJSFile);
+const code = readFileSync(mainFile, 'utf8');
+const out = processor === 'es6' ? await replaceES6Imports(code, mainFile) : code;
 
 console.log(`\n${'-'.repeat(20)} original ${'-'.repeat(20)}
 ${code}

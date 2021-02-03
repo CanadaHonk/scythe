@@ -5,7 +5,17 @@ const processor = process.argv[2];
 const mainFile = process.argv[3];
 
 const code = readFileSync(mainFile, 'utf8');
-const out = processor === 'es6' ? await replaceES6Imports(code, mainFile) : code;
+
+let out;
+switch (processor) {
+  case 'es6':
+    out = await replaceES6Imports(code, mainFile);
+    break;
+
+  default:
+    console.error('Unknown processor (first argument)');
+    process.exit();
+}
 
 console.log(`\n${'-'.repeat(20)} original ${'-'.repeat(20)}
 ${code}

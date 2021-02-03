@@ -11,10 +11,9 @@ export const scssToCss = async (scss) => {
   });
 
   for (const v of variables) {
+    console.log(v);
     out = out.replace(new RegExp(`\\$${v[0]}`, 'g'), v[1]);
   }
-
-  // console.log(variables);
 
   return out;
 };

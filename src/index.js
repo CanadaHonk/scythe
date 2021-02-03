@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import { replaceImports as replaceES6Imports } from './es6ToScythe.js';
+import { replaceImports as replaceES6Imports } from './embedES6.js';
 
 const mainJSFile = process.argv[2];
 

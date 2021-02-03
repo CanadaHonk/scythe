@@ -1,3 +1,20 @@
+const variableReplacing = /\$(.*): (.*);\n*/g;
+
 export const scssToCss = async (scss) => {
-  return scss;
+  let out = scss;
+
+  const variables = [];
+
+  out = out.replace(variableReplacing, (_, name, value) => {
+    variables.push([name.trim(), value.trim()]);
+    return '';
+  });
+
+  for (const v of variables) {
+    out = out.replace(new RegExp(`\\$${v[0]}`, 'g'), v[1]);
+  }
+
+  // console.log(variables);
+
+  return out;
 };
